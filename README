@@ -1,0 +1,18 @@
+Required:
+1- Linux (test on Ubuntu 16.04)
+1- Install gmp and mpfr
+2- Install nfllib
+3- Edit the makefile (the first two lines) to have:
+	NFLLIB_HOME: the directory where you have installed nfllib
+	LIBS_HOME  : the directory where you have installed gmp and mpfr
+
+
+To compile:
+* No optimization: make -Ibuild
+* Optimized: make -Ibuild build
+* Run test : make -Ibuild run
+
+
+Test scenario (the default is the IBE encryption with 80 security):
+* The default parameters are in the params.hpp file
+* The test scenario is in the main.cpp file
