@@ -1,6 +1,6 @@
 # TO EDIT
-NFLLIB_HOME := /home/sabtmoha/nfllib
-LIBS_HOME   := /usr/local/lib
+NFLLIB_HOME :=
+LIBS_HOME   :=
 
 
 
