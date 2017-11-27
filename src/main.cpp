@@ -9,33 +9,10 @@
 
 #include<nfl.hpp>
 
-
-#define sigma_512_ibe 3.3
-#define zeta_512_ibe 1935.7
-#define tau_512_ibe 3.3
-#define gamma_512_ibe 44.93
-
 #define sigma_1024_ibe 5
 #define zeta_1024_ibe 6360
 #define tau_1024_ibe 5
 #define gamma_1024_ibe 147.47
-
-#define sigma_2048_ibe 6.7
-#define zeta_2048_ibe 16898
-#define tau_2048_ibe 6.7
-#define gamma_2048_ibe 645.419
-
-#define sigma_512_sign 4.2
-#define zeta_512_sign 2529
-
-#define sigma_1024_sign 5.8
-#define zeta_1024_sign 6143
-
-#define sigma_1024_sign_bis 6.3
-#define zeta_1024_sign_bis 8023
-
-#define sigma_1024_sign_ 6
-#define zeta_1024_sign_ 2213.1
 
 
 using namespace Ibe;
@@ -52,7 +29,7 @@ int main(void) {
 	std::cout << "Before TrustedParty" << std::endl;
 	TrustedParty thirdParty{NFL_POLY_N, NFL_POLY_Q_BITS, modulo, sigma_1024_ibe, 80};
 	thirdParty.generateMasterKey();
-	thirdParty.setGaussian(zeta_1024_sign);
+	thirdParty.setGaussian(zeta_1024_ibe);
 	thirdParty.preCompute(2);
 
 
@@ -69,71 +46,39 @@ int main(void) {
 	Poly_t * ciphertext = new Poly_t[(NFL_POLY_Q_BITS + 3)*2];
 	sender.encrypt(ciphertext, m);
 
-	Poly_t * decrypted = new Poly_t[2];
-	sender.decrypt(decrypted, ciphertext);
 
-
-//   Multi-threading
-	/*
-	auto lambda = [&thirdParty](const uint32_t length) {
-		for(uint32_t i = 0; i < length; ++i) {
-			thirdParty.generateMasterKey();
-		}
-	};
-
-	pool[0] = std::thread(lambda, 490);
-	pool[1] = std::thread(lambda, 490);
-	*/
-	
-
-	/*
-	auto lambda = [&sender](const uint32_t length) {
-		for(uint32_t i = 0; i < length; ++i) {
-			sender.extractPrivateKey();
-		}
-	};
-	pool[0] = std::thread(lambda, 255);
-	pool[1] = std::thread(lambda, 255);
-	*/
-	
-	
-	/*
 	auto lambda = [&sender, &m](Poly_t * ciphertext, const uint32_t length) {
 		for(uint32_t i = 0; i < length; ++i) {
 			sender.encrypt(ciphertext, m);
 		}
 	};
+	pool[0] = std::thread(lambda, ciphertext, 100);
+	pool[1] = std::thread(lambda, ciphertext + NFL_POLY_Q_BITS + 3, 100);
+	auto start = std::chrono::high_resolution_clock::now();
+	pool[0].join();
+	pool[1].join();
+	auto end = std::chrono::high_resolution_clock::now();
+	auto timing = std::chrono::duration<double, std::milli>(end - start);
+	std::cout << "Encryption Time of 200 messages: " << timing.count() << " ms " << std::endl;
 
-	pool[0] = std::thread(lambda, ciphertext, 205);
-	pool[1] = std::thread(lambda, ciphertext + NFL_POLY_Q_BITS + 3, 205);
-	*/
-	
-	
-	/*
+
+	Poly_t * decrypted = new Poly_t[2];
+	sender.decrypt(decrypted, ciphertext);
+
 	auto lambda = [&sender, ciphertext](Poly_t * output, const uint32_t length) {
 		for(uint32_t i = 0; i < length; ++i) {
 			sender.decrypt(output, ciphertext);
 		}
 	};
 
-	pool[0] = std::thread(lambda, decrypted, 10500);
-	pool[1] = std::thread(lambda, decrypted + 1, 10500);
-	*/
-	
-/*
-	auto start = std::chrono::high_resolution_clock::now();
-//	pool[0].join();
-//	pool[1].join();
-//	sender.decrypt(decrypted, ciphertext);
-//	thirdParty.preCompute(320);
-	auto end = std::chrono::high_resolution_clock::now();
-	auto timing = std::chrono::duration<double, std::milli>(end - start);
-	std::cout << "generation key Time: " << timing.count() << " ms " << std::endl;
-
-	delete[] ciphertext;
-	delete[] decrypted;
-*/	
-
+	pool[0] = std::thread(lambda, decrypted, 1000);
+	pool[1] = std::thread(lambda, decrypted + 1, 1000);
+	start = std::chrono::high_resolution_clock::now();
+	pool[0].join();
+	pool[1].join();
+	end = std::chrono::high_resolution_clock::now();
+	timing = std::chrono::duration<double, std::milli>(end - start);
+	std::cout << "Decryption Time of 2000 ciphertexts: " << timing.count() << " ms " << std::endl;
 
 	return 0;
 }

@@ -122,13 +122,6 @@ void Ibe::TrustedParty::encapsulation::samplePre(Poly_t * output, const Poly_t *
 
 
 	// compute z
-	/*
-	auto vs = v.poly2mpz();
-	uint64_t vCoefs[vs.size()]; 
-	for(uint32_t i = 0; i < vs.size(); ++i) {
-		vCoefs[i] = (uint64_t) mpz_get_ui(vs[i]);
-	}
-	*/
 	uint64_t vCoefs[dimension];
 	uint32_t index = 0;
 	for(auto & v_i : v.poly_obj()) {
@@ -327,11 +320,6 @@ void Ibe::TrustedParty::setGaussian(const double_t s) noexcept {
 /* @Override */
 void Ibe::TrustedParty::preCompute(const uint32_t n) noexcept {
 	impl->gaussianSampler->preCompute(n);
-
-	/*
-	Poly_t output[impl->param + 2];
-	impl->gaussianSampler->samplePz(output);
-	*/
 }
 
 /* @Override */

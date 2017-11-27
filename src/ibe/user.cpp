@@ -141,16 +141,6 @@ NFL_POLY_COEF_TYPE Ibe::User::encapsulation::inverse(const NFL_POLY_COEF_TYPE a)
 }
 
 void Ibe::User::encapsulation::inverse_poly(Poly_t * output, Poly_t & input) {
-	/*
-	auto inputs = input.poly2mpz();
-	const uint32_t n = inputs.size();
-
-	NFL_POLY_COEF_TYPE invs[n];
-	for(uint32_t i = 0; i < n; ++i) {
-		invs[i] = inverse(mpz_get_ui(inputs[i]));
-	}
-    output->set(invs, invs + n);
-    */
     uint32_t i = 0;
     NFL_POLY_COEF_TYPE invs[dimension];
 	for(auto & input_i : input.poly_obj()) {
@@ -327,13 +317,6 @@ void Ibe::User::decrypt(Poly_t * output, const Poly_t * cipher) const noexcept {
 	*output = *cipher - bx;
 	output->invntt_pow_invphi();
 
-	/*
-	const uint32_t modulus_4  = impl->modulus >> 2;
-	const uint32_t modulus_34 = 3*modulus_4;
-	for(auto & output_i : output->poly_obj()) {
-		output_i = ((output_i <= modulus_4) || (output_i >= modulus_34)) ? 0 : 1;
-	}
-	*/
 	const uint32_t modulus_4  = impl->modulus >> 2;
 	const uint32_t modulus_34 = 3*modulus_4;
 	for(auto & output_i : output->poly_obj()) {

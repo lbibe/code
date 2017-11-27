@@ -1,3 +1,9 @@
+# TO EDIT
+NFLLIB_HOME := /home/sabtmoha/nfllib
+LIBS_HOME   := /usr/local/lib
+
+
+
 # Project tree
 ROOT := .
 SDIR := src
@@ -69,12 +75,12 @@ LIBRARIES_SHARED :=
 LIBRARIES_STATIC :=
 
 # General compiler options to be fine-tuned
-CFLAGS_COMMON := -std=c++14 -I/home/sabtmoha/nfllib/include
+CFLAGS_COMMON := -std=c++14 -I$(NFLLIB_HOME)/include
 #-fno-plt -fno-jump-tables -fpic -Wno-missing-field-initializers
 ## -fpie -fstack-reuse=none
 
 # General linker options to be fine-tuned
-LFLAGS_COMMON := -L/home/sabtmoha/nfllib/lib -L/usr/local/lib -Wl,-rpath=/usr/local/lib:/home/sabtmoha/nfllib/lib -lmpfr -lnfllib -lgmp -lpthread
+LFLAGS_COMMON := -L$(NFLLIB_HOME)/lib -L$(LIBS_HOME) -Wl,-rpath=$(LIBS_HOME):$(NFLLIB_HOME)/lib -lmpfr -lnfllib -lgmp -lpthread
 ##-static-libubsan
 
 # Optimization options related to the processor

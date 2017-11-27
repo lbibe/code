@@ -17,12 +17,11 @@
  */
 #define MAX_Q_BITS 130
 
-#define NFL_POLY_COEF_TYPE uint32_t
+#define NFL_POLY_COEF_TYPE uint64_t
 #define NFL_POLY_N         1024
-#define NFL_POLY_Q_BITS    30
+#define NFL_POLY_Q_BITS    62
 using poly_tt = nfl::poly_from_modulus<NFL_POLY_COEF_TYPE, NFL_POLY_N, NFL_POLY_Q_BITS>;
 using Poly_t  = nfl::poly_p<typename poly_tt::value_type, poly_tt::degree, poly_tt::nmoduli>;
-//using Poly_t  = nfl::poly_p<NFL_POLY_COEF_TYPE, NFL_POLY_N, NFL_POLY_Q_BITS>;
 
 
 /**

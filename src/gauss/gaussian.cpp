@@ -25,42 +25,6 @@ using namespace FFT;
 
 /* --------------------------------------------------------------------------------------------------- */
 /* Static Functions ---------------------------------------------------------------------------------- */
-/*
-static void merge(double_t * output, const double_t * input_1, const double_t * input_2, const uint32_t length) {
-	for(uint32_t i = 0, j = 0; i < length; ++i) {
-		output[j++] = input_2[i];
-		output[j++] = input_1[i];
-	}
-}
-
-static void split(double_t * output_1, double_t * output_2, const double_t * input, const uint32_t length) {
-	for(uint32_t i = 0, j = 0; i < length; ++j) {
-		output_2[j] = input[i++]; 
-		output_1[j] = input[i++];
-	}
-}
-*/
-
-/*
-TO DELETE
-static Poly_t conjugate(Poly_t & polyIn) {
-	auto coefsIn = polyIn.poly2mpz();
-
-	std::array<mpz_t, NFL_POLY_N> coefsOut{};
-	mpz_set(coefsOut[0], coefsIn[0]);
-
-	const uint32_t n = coefsIn.size();
-	for(uint32_t i = 1; i < n; ++i) {
-		mpz_neg(coefsOut[i], coefsIn[n - i]);
-	}
-
-	Poly_t polyOut;
-	polyOut.mpz2poly(coefsOut);
-	return polyOut;
-}
-*/
-
-
 inline static void getBits(uint8_t * bits, uint64_t n, uint32_t length) {
 	uint32_t mask = 1;
 	for(uint32_t i = 0; i < length; ++i) {
@@ -535,8 +499,6 @@ impl(new encapsulation {.dimension = n, .param = k}) {
 
 	// prebuild the Gaussian noise for P
 	impl->P_fastGaussNoise.reset(new fastGauss_t(5, lambda, n));
-
-//	impl->P_fastGaussNoice.reset(new fastGauss_t(impl->P_z1, lambda, n));
 	impl->P_gaussianNoise.reset(new Gauss_t(impl->P_fastGaussNoise.get()));
 
 
@@ -736,58 +698,3 @@ Poly_t * Gaussian::GaussianSampling::samplePz(void) const noexcept {
 	impl->P_precomputedPerturbations.pop();
 	return result;
 }
-
-/* @Override */
-/*
-void Gaussian::GaussianSampling::test(nfl::poly_p<NFL_POLY_COEF_TYPE, NFL_POLY_N, NFL_POLY_Q_BITS> * polys) noexcept {
-	std::random_device rd;  //Will be used to obtain a seed for the random number engine
-    std::mt19937 gen(rd()); //Standard mersenne_twister_engine seeded with rd()
-    std::uniform_int_distribution<> dis(1, 65642);
-
-    uint64_t coset[512];
-    for(uint32_t i = 0; i < 512; ++i) {
-    	coset[i] = (uint64_t) dis(gen);
-    }
-
-//	std::fill_n(coset, 256, 445U);
-	sampleGPoly(polys, coset);
-}
-*/
-
-
-/* Public Interface End ------------------------------------------------------------------------------ */
-/* --------------------------------------------------------------------------------------------------- */
-
-
-/* classical version
-static int64_t sampleZ(const double_t sigma, const double_t center, const uint32_t tau = 6) {
-	// compute some constants
-	const double_t cst = (-1)/(2 * (sigma*sigma));
-	const int64_t max = ceil(sigma*tau);
-
-	// random engines
-	std::random_device rd;
-	std::mt19937_64 randomGenerator(rd());
-
-	std::uniform_int_distribution<int64_t> uniformDist1(-max, max);
-	std::uniform_real_distribution<double_t> uniformDist2(0.0, 1.0);
-
-
-	// sampling by rejection
-	int64_t x = 0;
-	const int64_t center_z = ceil(center);
-	do {
-		// get a random from a uniform distribution~unif(-max, max] and center it
-		x = center_z + uniformDist1(randomGenerator);
-
-		// compute the trial
-		const double_t tmp = x - center;
-		const double_t z = exp(tmp*tmp*cst);
-
-		// get a random from a uniform distribution~unif(0, 1]
-		const double_t y = uniformDist2(randomGenerator);
-
-	} while(y >= z)
-	return x;
-}
-*/
