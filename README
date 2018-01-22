@@ -20,5 +20,4 @@
 
 
 ## We include the built test in the default test scenario in bin. To run, use the command 'make -Ibuild run'
-Test 5
 
